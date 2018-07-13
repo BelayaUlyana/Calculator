@@ -62,14 +62,4 @@ public class MainActivity extends AppCompatActivity {
 //                break;
         }
     }
-    public void splitString(String s){
-        char ch [] = s.toCharArray();
-        String var [] = new String[ch.length];
-        for (int i = 0; i<ch.length;i++){
-            if (!Character.isDigit(ch[i])) {
-                for (int j = 0;j<var.length;j++){
-                }
-            }
-        }
-    }
 }
