@@ -1,10 +1,7 @@
 package com.example.asus.calculator;
 
-import android.annotation.SuppressLint;
-import android.renderscript.ScriptGroup;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Editable;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,13 +11,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private TextView tvResultField;
     private EditText etInputField;
-    private Button multiplication, divisiona, adition, subtraction, equality; // remove
-    private char oper; // remove
 
 
     private String operation;
     private double num1, num2, result;
-    private Button btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn0, btnPlus, btnMinus, btnMultiply, btnDivision, btnEquals;
+    private Button btnClean, btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn0, btnPlus, btnMinus, btnMultiply, btnDivision, btnEquals;
 
 
     @Override
@@ -32,6 +27,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         operation = "";
         num1=0; num2=0;
 
+        btnClean = findViewById(R.id.btnClean);
         btn1 = findViewById(R.id.btn1);
         btn2 = findViewById(R.id.btn2);
         btn3 = findViewById(R.id.btn3);
@@ -47,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnMultiply = findViewById(R.id.btnMultiply);
         btnDivision = findViewById(R.id.btnDivision);
         btnEquals = findViewById(R.id.btnEquals);
+        btnClean.setOnClickListener(this);
         btn1.setOnClickListener(this);
         btn2.setOnClickListener(this);
         btn3.setOnClickListener(this);
@@ -66,60 +63,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         tvResultField = findViewById(R.id.resultField);
         etInputField = findViewById(R.id.inputField);
-
-
-        /*
-        * remove - redundant
-        * */
-        multiplication = findViewById(R.id.b_multiplication); //умножение
-        divisiona = findViewById(R.id.b_division);  //деление
-        adition = findViewById(R.id.b_adition);  //сложение
-        subtraction = findViewById(R.id.b_subtraction);  //вычитание
-        equality = findViewById(R.id.b_equality);  // равенство
-        /*
-        * remove - redundant
-        * */
     }
-
-
-    /*
-     *  remove - unnecessary
-     * */
-    @Deprecated
-    public void onNumberClick(View view) {
-        int result = 0;
-
-        Button button = (Button) view;
-        tvResultField.append(button.getText());
-        String input = tvResultField.getText().toString();
-//        String oper = "";
-
-        switch (view.getId()) {
-            case R.id.b_equality:
-                int variable1 ;
-                int variable2 ;
-
-//                switch () {
-//                    case "*":
-//                        result = variable1 * variable2;
-//                        break;
-//                    case "/":
-//                        result = variable1 / variable2;
-//                        break;
-//                    case "+":
-//                        result = variable1 + variable2;
-//                        break;
-//                    case "-":
-//                        result = variable1 - variable2;
-//                        break;
-//                }
-//                resultField.setText(result);
-//                break;
-        }
-    }
-    /*
-     *  remove - unnecessary
-     * */
 
 
     @Override
@@ -127,6 +71,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         int id = view.getId();
         switch (id) {
+            case R.id.btnClean:
+                etInputField.setText("");
+                break;
             case R.id.btn1:
                 etInputField.append("1");
                 break;
