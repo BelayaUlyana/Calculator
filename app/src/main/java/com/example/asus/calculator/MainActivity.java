@@ -7,6 +7,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.util.regex.Pattern;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private TextView tvResultField;
@@ -125,11 +127,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void parseData() {
-        String[] splittedArr = etInputField.getText().toString().split("должно парсить по знакам +-*/");
+        char chArr []= etInputField.getText().toString().toCharArray();
+        for (int i=0;i<chArr.length;i++){
+            if (!Character.isDigit(chArr[i])){
+                operation = String.valueOf(chArr[i]);
+            }
+        }
+        String[] splittedArr = etInputField.getText().toString().split("\\D");
         num1 = Double.parseDouble(splittedArr[0]);
-        num2 = Double.parseDouble(splittedArr[2]);
-        operation = splittedArr[1];
-
+        num2 = Double.parseDouble(splittedArr[1]);
         calculate();
     }
 
