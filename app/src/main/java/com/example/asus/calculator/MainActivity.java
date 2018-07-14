@@ -10,33 +10,88 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private TextView resultField;
-    private EditText inputField;
-    private Button multiplication, divisiona, adition, subtraction, equality;
-    private char oper;
+    private TextView tvResultField;
+    private EditText etInputField;
+    private Button multiplication, divisiona, adition, subtraction, equality; // remove
+    private char oper; // remove
+
+
+    private String operation;
+    private double num1, num2, result;
+    private Button btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn0, btnPlus, btnMinus, btnMultiply, btnDivision, btnEquals;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        resultField = findViewById(R.id.resultField);
-        inputField = findViewById(R.id.inputField);
 
+
+        operation = "";
+        num1=0; num2=0;
+
+        btn1 = findViewById(R.id.btn1);
+        btn2 = findViewById(R.id.btn2);
+        btn3 = findViewById(R.id.btn3);
+        btn4 = findViewById(R.id.btn4);
+        btn5 = findViewById(R.id.btn5);
+        btn6 = findViewById(R.id.btn6);
+        btn7 = findViewById(R.id.btn7);
+        btn8 = findViewById(R.id.btn8);
+        btn9 = findViewById(R.id.btn9);
+        btn0 = findViewById(R.id.btn0);
+        btnPlus = findViewById(R.id.btnPlus);
+        btnMinus = findViewById(R.id.btnMinus);
+        btnMultiply = findViewById(R.id.btnMultiply);
+        btnDivision = findViewById(R.id.btnDivision);
+        btnEquals = findViewById(R.id.btnEquals);
+        btn1.setOnClickListener(this);
+        btn2.setOnClickListener(this);
+        btn3.setOnClickListener(this);
+        btn4.setOnClickListener(this);
+        btn5.setOnClickListener(this);
+        btn6.setOnClickListener(this);
+        btn7.setOnClickListener(this);
+        btn8.setOnClickListener(this);
+        btn9.setOnClickListener(this);
+        btn0.setOnClickListener(this);
+        btnPlus.setOnClickListener(this);
+        btnMinus.setOnClickListener(this);
+        btnMultiply.setOnClickListener(this);
+        btnDivision.setOnClickListener(this);
+        btnEquals.setOnClickListener(this);
+
+
+        tvResultField = findViewById(R.id.resultField);
+        etInputField = findViewById(R.id.inputField);
+
+
+        /*
+        * remove - redundant
+        * */
         multiplication = findViewById(R.id.b_multiplication); //умножение
         divisiona = findViewById(R.id.b_division);  //деление
         adition = findViewById(R.id.b_adition);  //сложение
         subtraction = findViewById(R.id.b_subtraction);  //вычитание
         equality = findViewById(R.id.b_equality);  // равенство
+        /*
+        * remove - redundant
+        * */
     }
 
+
+    /*
+     *  remove - unnecessary
+     * */
+    @Deprecated
     public void onNumberClick(View view) {
         int result = 0;
 
         Button button = (Button) view;
-        inputField.append(button.getText());
-        String input = inputField.getText().toString();
+        tvResultField.append(button.getText());
+        String input = tvResultField.getText().toString();
 //        String oper = "";
 
         switch (view.getId()) {
@@ -61,5 +116,93 @@ public class MainActivity extends AppCompatActivity {
 //                resultField.setText(result);
 //                break;
         }
+    }
+    /*
+     *  remove - unnecessary
+     * */
+
+
+    @Override
+    public void onClick(View view) {
+
+        int id = view.getId();
+        switch (id) {
+            case R.id.btn1:
+                etInputField.append("1");
+                break;
+            case R.id.btn2:
+                etInputField.append("2");
+                break;
+            case R.id.btn3:
+                etInputField.append("3");
+                break;
+            case R.id.btn4:
+                etInputField.append("4");
+                break;
+            case R.id.btn5:
+                etInputField.append("5");
+                break;
+            case R.id.btn6:
+                etInputField.append("6");
+                break;
+            case R.id.btn7:
+                etInputField.append("7");
+                break;
+            case R.id.btn8:
+                etInputField.append("8");
+                break;
+            case R.id.btn9:
+                etInputField.append("9");
+                break;
+            case R.id.btn0:
+                etInputField.append("0");
+                break;
+            case R.id.btnPlus:
+                etInputField.append("+");
+                break;
+            case R.id.btnMinus:
+                etInputField.append("-");
+                break;
+            case R.id.btnMultiply:
+                etInputField.append("*");
+                break;
+            case R.id.btnDivision:
+                etInputField.append("/");
+                break;
+
+            case R.id.btnEquals:
+                parseData();
+                break;
+
+        }
+    }
+
+    private void parseData() {
+        String[] splittedArr = etInputField.getText().toString().split("должно парсить по знакам +-*/");
+        num1 = Double.parseDouble(splittedArr[0]);
+        num2 = Double.parseDouble(splittedArr[2]);
+        operation = splittedArr[1];
+
+        calculate();
+    }
+
+    private void calculate() {
+        switch (operation) {
+            case "+":
+                result = num1 + num2;
+                break;
+            case "-":
+                result = num1 - num2;
+                break;
+            case "*":
+                result = num1 * num2;
+                break;
+            case "/":
+                result = num1 / num2;
+                break;
+                default:
+                    System.out.println("error while calculating!");
+        }
+        tvResultField.setText(String.valueOf(result));
     }
 }
