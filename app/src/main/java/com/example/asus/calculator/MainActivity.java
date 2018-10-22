@@ -1,5 +1,6 @@
 package com.example.asus.calculator;
 
+import android.annotation.SuppressLint;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -7,17 +8,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import java.util.regex.Pattern;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity {
 
-    private TextView tvResultField;
-    private EditText etInputField;
-
-
-    private String operation;
-    private double num1, num2, result;
-    private Button btnClean, btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn0, btnPlus, btnMinus, btnMultiply, btnDivision, btnEquals;
+    private TextView tvResultField;  // текстовое поле для вывода результата
+    private EditText etInputField;   // поле для ввода числа
+    private Double operand = null;           // операнд операции
+    private String lastOperation = "=";      // последняя операция
+    private TextView operationField;         // текстовое поле для вывода знака операции
 
 
     @Override
@@ -25,137 +23,96 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-        operation = "";
-        num1=0; num2=0;
-
-        btnClean = findViewById(R.id.btnClean);
-        btn1 = findViewById(R.id.btn1);
-        btn2 = findViewById(R.id.btn2);
-        btn3 = findViewById(R.id.btn3);
-        btn4 = findViewById(R.id.btn4);
-        btn5 = findViewById(R.id.btn5);
-        btn6 = findViewById(R.id.btn6);
-        btn7 = findViewById(R.id.btn7);
-        btn8 = findViewById(R.id.btn8);
-        btn9 = findViewById(R.id.btn9);
-        btn0 = findViewById(R.id.btn0);
-        btnPlus = findViewById(R.id.btnPlus);
-        btnMinus = findViewById(R.id.btnMinus);
-        btnMultiply = findViewById(R.id.btnMultiply);
-        btnDivision = findViewById(R.id.btnDivision);
-        btnEquals = findViewById(R.id.btnEquals);
-        btnClean.setOnClickListener(this);
-        btn1.setOnClickListener(this);
-        btn2.setOnClickListener(this);
-        btn3.setOnClickListener(this);
-        btn4.setOnClickListener(this);
-        btn5.setOnClickListener(this);
-        btn6.setOnClickListener(this);
-        btn7.setOnClickListener(this);
-        btn8.setOnClickListener(this);
-        btn9.setOnClickListener(this);
-        btn0.setOnClickListener(this);
-        btnPlus.setOnClickListener(this);
-        btnMinus.setOnClickListener(this);
-        btnMultiply.setOnClickListener(this);
-        btnDivision.setOnClickListener(this);
-        btnEquals.setOnClickListener(this);
-
-
         tvResultField = findViewById(R.id.resultField);
         etInputField = findViewById(R.id.inputField);
-    }
+        operationField = findViewById(R.id.operationField);
 
+    }
 
     @Override
-    public void onClick(View view) {
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putString("OPERATION", lastOperation);
+        if (operand != null)
+            outState.putDouble("OPERAND", operand);
+        super.onSaveInstanceState(outState);
+    }
 
-        int id = view.getId();
-        switch (id) {
-            case R.id.btnClean:
-                etInputField.setText("");
-                break;
-            case R.id.btn1:
-                etInputField.append("1");
-                break;
-            case R.id.btn2:
-                etInputField.append("2");
-                break;
-            case R.id.btn3:
-                etInputField.append("3");
-                break;
-            case R.id.btn4:
-                etInputField.append("4");
-                break;
-            case R.id.btn5:
-                etInputField.append("5");
-                break;
-            case R.id.btn6:
-                etInputField.append("6");
-                break;
-            case R.id.btn7:
-                etInputField.append("7");
-                break;
-            case R.id.btn8:
-                etInputField.append("8");
-                break;
-            case R.id.btn9:
-                etInputField.append("9");
-                break;
-            case R.id.btn0:
-                etInputField.append("0");
-                break;
-            case R.id.btnPlus:
-                etInputField.append("+");
-                break;
-            case R.id.btnMinus:
-                etInputField.append("-");
-                break;
-            case R.id.btnMultiply:
-                etInputField.append("*");
-                break;
-            case R.id.btnDivision:
-                etInputField.append("/");
-                break;
+    // получение ранее сохраненного состояния
+    @SuppressLint("SetTextI18n")
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        lastOperation = savedInstanceState.getString("OPERATION");
+        operand= savedInstanceState.getDouble("OPERAND");
+        tvResultField.setText(operand.toString());
+        operationField.setText(lastOperation);
 
-            case R.id.btnEquals:
-                parseData();
-                break;
+    }
 
+    // обработка нажатия на числовую кнопку
+
+    public void onNumberClick(View view) {
+
+        Button button = (Button) view;
+        etInputField.append(button.getText());
+
+        if (lastOperation.equals("=") && operand != null) {
+            operand = null;
         }
     }
 
-    private void parseData() {
-        char chArr []= etInputField.getText().toString().toCharArray();
-        for (int i=0;i<chArr.length;i++){
-            if (!Character.isDigit(chArr[i])){
-                operation = String.valueOf(chArr[i]);
+    // обработка нажатия на кнопку операции
+    public void onOperationClick(View view) {
+
+        Button button = (Button) view;
+        String op = button.getText().toString();
+        String number = etInputField.getText().toString();
+        // если введенно что-нибудь
+        if (number.length() > 0) {
+            number = number.replace(',', '.');
+            try {
+                performOperation(Double.valueOf(number), op);
+            } catch (NumberFormatException ex) {
+                etInputField.setText("");
             }
         }
-        String[] splittedArr = etInputField.getText().toString().split("\\D");
-        num1 = Double.parseDouble(splittedArr[0]);
-        num2 = Double.parseDouble(splittedArr[1]);
-        calculate();
+        lastOperation = op;
+        operationField.setText(lastOperation);
     }
 
-    private void calculate() {
-        switch (operation) {
-            case "+":
-                result = num1 + num2;
-                break;
-            case "-":
-                result = num1 - num2;
-                break;
-            case "*":
-                result = num1 * num2;
-                break;
-            case "/":
-                result = num1 / num2;
-                break;
-                default:
-                    System.out.println("error while calculating!");
+    @SuppressLint("SetTextI18n")
+    private void performOperation(Double number, String operation) {
+
+        // если операнд ранее не был установлен (при вводе самой первой операции)
+        if (operand == null) {
+            operand = number;
+        } else {
+            if (lastOperation.equals("=")) {
+                lastOperation = operation;
+            }
+            switch (lastOperation) {
+                case "=":
+                    operand = number;
+                    break;
+                case "/":
+                    if (number == 0) {
+                        operand = 0.0;
+                    } else {
+                        operand /= number;
+                    }
+                    break;
+                case "*":
+                    operand *= number;
+                    break;
+                case "+":
+                    operand += number;
+                    break;
+                case "-":
+                    operand -= number;
+                    break;
+            }
         }
-        tvResultField.setText(String.valueOf(result));
+        tvResultField.setText(operand.toString().replace('.', ','));
+        etInputField.setText("");
     }
 }
